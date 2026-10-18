@@ -83,6 +83,10 @@
   .header-decor{width:120px;height:20px;margin:14px auto 0;display:block;color:var(--gold);opacity:.9}
   .drum-art{width:132px;height:auto;margin:0 auto 2px;color:var(--gold);fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .drum-art .ball{fill:currentColor;stroke:none}
+  .foot-credit{font-size:15px;line-height:1.5;color:var(--text);margin:0 0 8px}
+  .foot-credit a{color:var(--text);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--muted)}
+  .foot-credit a:hover{text-decoration-color:var(--gold);color:var(--gold)}
+  .foot-note{font-size:12px;color:var(--muted);margin:0}
   @page{size:A4;margin:10mm}
 </style>
 </head>
@@ -160,13 +164,16 @@
     </div>
   </section>
 </main>
-<footer>Хэллоуин-лотерея · комплект ведущего · «Все для праздника»</footer>
+<footer>
+  <p class="foot-credit">Студия IT Event · <a href="mailto:neirosetwork@gmail.com">neirosetwork@gmail.com</a></p>
+  <p class="foot-note">Хэллоуин-лотерея · комплект ведущего · «Все для праздника»</p>
+</footer>
 <section id="printRoot" aria-hidden="true"></section>
 
 <script>
 (function(){
   "use strict";
-  var LS_KEY = "vsesprazdnikom_lottery_v1";
+  var LS_KEY = "halloween-kit-2026";
   var LEGACY_KEY = "***";
   function $(id){ return document.getElementById(id); }
 
@@ -353,7 +360,7 @@
         '<div class="t-top">🎃 Хэллоуин-лотерея 🎃</div>' +
         '<div class="t-num">' + i + '</div>' +
         '<div class="t-bottom">счастливый номер</div>' +
-        '<div class="t-credit">Все для праздника</div>' +
+        '<div class="t-credit">Студия IT Event · neirosetwork@gmail.com</div>' +
         '</div>';
       root.appendChild(t);
     }
@@ -373,7 +380,7 @@
     }
     var pad = n - list.length;
     if(pad > 0){ html += '<p class="sheet-note">🎁 А для остальных номеров — призы-сюрпризы (' + pad + ' шт.)</p>'; }
-    html += '<p class="sheet-foot">Все для праздника</p>';
+    html += '<p class="sheet-foot">Студия IT Event · neirosetwork@gmail.com</p>';
     var sheet = document.createElement("div");
     sheet.className = "sheet";
     sheet.innerHTML = html;
@@ -392,7 +399,7 @@
         '<li>Твой номер выпал — забирай приз, который под ним спрятан.</li>' +
         '<li>В конце вечера можно проверить отпечаток честности.</li>' +
         '</ol>' +
-        '<div class="rc-foot">Приятного праздника! 🎃 Все для праздника</div>';
+        '<div class="rc-foot">Приятного праздника! 🎃 Студия IT Event · neirosetwork@gmail.com</div>';
       root.appendChild(card);
     }
   }
