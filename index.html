@@ -25,9 +25,9 @@
   .muted{color:var(--muted);font-size:14px;margin:4px 0}
   .hint{color:var(--muted);font-size:13px;margin:8px 0 0}
   .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:12px}
-  input[type=number],textarea{background:#0b1c33;border:1px solid var(--line);color:var(--text);
+  input[type=number],input[type=text],textarea{background:#0b1c33;border:1px solid var(--line);color:var(--text);
        border-radius:10px;padding:10px 12px;font:inherit}
-  input[type=number]{width:110px}
+  input[type=number],input[type=text]{width:110px}
   textarea{width:100%;resize:vertical;min-height:120px}
   .btn{cursor:pointer;border:0;border-radius:12px;padding:11px 16px;font:inherit;font-weight:600;
        background:#33244a;color:#f1e9d7;transition:filter .15s ease,transform .06s ease}
@@ -101,9 +101,9 @@
 <main>
   <section class="panel">
     <h2>1 · Билеты для гостей</h2>
-    <p class="muted">Билеты с номерами от 1 до N. Распечатайте, нарежьте по пунктиру и раздайте гостям — по билету каждому.</p>
+    <p class="muted">Билеты с номерами от 1 до 999. Распечатайте, нарежьте по пунктиру и раздайте гостям — по билету каждому.</p>
     <div class="row">
-      <label>Сколько билетов: <input id="ticketCount" type="number" min="2" max="100" step="1" value="24"></label>
+      <label>Сколько билетов: <input id="ticketCount" type="text" inputmode="numeric" autocomplete="off" placeholder="0" value="0"></label>
       <button id="printBtn" class="btn">🖨 Распечатать билеты</button>
     </div>
     <p class="hint">В окне печати выберите А4 и книжную ориентацию. Совет: плотная бумага (160–200 г/м²) держит форму и приятнее на ощупь.</p>
@@ -173,12 +173,12 @@
 <script>
 (function(){
   "use strict";
-  var LS_KEY = "halloween-kit-2026";
+  var LS_KEY = "halloween-kit-2026-2";
   var LEGACY_KEY = "***";
   function $(id){ return document.getElementById(id); }
 
   function defaultState(){
-    return { tickets:24, prizes:[], mapping:[], drawn:[], sealed:false, seal:"", sound:true };
+    return { tickets:0, prizes:[], mapping:[], drawn:[], sealed:false, seal:"", sound:true };
   }
   var state = defaultState();
 
@@ -212,7 +212,7 @@
   }
 
   function clampTickets(v){
-    v = parseInt(v,10); if(isNaN(v)) v = 24; if(v<2) v = 2; if(v>100) v = 100; return v;
+    v = parseInt(String(v).replace(/[^0-9]/g, ""), 10); if(isNaN(v)) v = 0; if(v < 0) v = 0; if(v > 999) v = 999; return v;
   }
 
   function parsePrizes(){
@@ -435,7 +435,8 @@
   }
 
   function render(){
-    $("ticketCount").value = state.tickets;
+    var tc = $("ticketCount");
+    if(tc && document.activeElement !== tc){ tc.value = state.tickets; }
     $("ticketCount").disabled = state.sealed;
     $("sealBtn").disabled = state.sealed;
     $("prizeList").disabled = state.sealed;
@@ -462,8 +463,11 @@
     if(!state.sealed){
       state.tickets = clampTickets($("ticketCount").value);
       save();
-      render();
     }
+  });
+  $("ticketCount").addEventListener("blur", function(){
+    this.value = state.tickets;
+    render();
   });
 
   $("printBtn").addEventListener("click", function(){
@@ -471,6 +475,7 @@
       state.tickets = clampTickets($("ticketCount").value);
       save();
     }
+    if(state.tickets < 1){ alert("Сначала укажите количество билетов."); return; }
     printMode = "tickets";
     render();
     window.print();
@@ -491,6 +496,7 @@
 
   $("sealBtn").addEventListener("click", function(){
     var n = clampTickets($("ticketCount").value);
+    if(n < 1){ alert("Сначала укажите количество билетов."); return; }
     var prizes = parsePrizes();
     if(prizes.length === 0){ alert("Сначала впишите хотя бы один приз."); return; }
     if(prizes.length > n && !confirm("Призов больше, чем билетов (" + prizes.length + " > " + n + "). Лишние не попадут в игру. Продолжить?")){ return; }
